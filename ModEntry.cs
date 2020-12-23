@@ -56,7 +56,7 @@ namespace AutoFarmScreenshot
             if (isScreenshottedToday || !nowInFarm)
                 return;
 
-            string fullName = takeMapscreenshot.Invoke<string>(scale, screenshot_name);
+            string fullName = takeMapscreenshot.Invoke<string>(scale, screenshot_name, null);
             if (fullName != null)
             {
                 // take screenshot
