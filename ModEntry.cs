@@ -13,6 +13,7 @@ namespace AutoFarmScreenshot
         private ModConfig Config;
         float scale = 0.25f;
         string screenshot_name = null;
+        string screenshot_format = null;
         IReflectedMethod takeMapscreenshot = null;
         IReflectedMethod addMessage = null;
         bool isScreenshottedToday = false;
@@ -29,6 +30,7 @@ namespace AutoFarmScreenshot
             // read config
             Config = Helper.ReadConfig<ModConfig>();
             scale = Config.ScaleNumber;
+            screenshot_format = Config.ScreenshotFormat;
             // attach event
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
             Helper.Events.Player.Warped += Player_Warped;
@@ -42,7 +44,24 @@ namespace AutoFarmScreenshot
             nowInFarm = false;
             isScreenshottedToday = false;
             var SToday = SDate.Now();
-            screenshot_name = Game1.player.name + "_" + SToday.Season + "-" + SToday.Day + "-" + SToday.Year;
+            screenshot_name = Format_Screenshot_Name();
+        }
+
+        private string Format_Screenshot_Name()
+        {
+            string _screenshot_name = screenshot_format;
+            var screenshot_dict = new System.Collections.Generic.Dictionary<string, string> { 
+                { "{PlayerName}", Game1.player.name }, 
+                { "{Season}", SDate.Now().Season.ToString() },
+                { "{Day}", SDate.Now().Day.ToString("00") },
+                { "{Year}", SDate.Now().Year.ToString("00") },
+                { "{TotalDays}", SDate.Now().DaysSinceStart.ToString("0000") }
+            };
+            foreach(System.Collections.Generic.KeyValuePair<string, string> format_item in screenshot_dict)
+            {
+                _screenshot_name = _screenshot_name.Replace(format_item.Key, format_item.Value);
+            }
+            return _screenshot_name;
         }
 
         private void GameLoop_DayStarted(object sender, DayStartedEventArgs e)
