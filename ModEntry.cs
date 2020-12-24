@@ -55,7 +55,8 @@ namespace AutoFarmScreenshot
                 { "{Season}", SDate.Now().Season.ToString() },
                 { "{Day}", SDate.Now().Day.ToString("00") },
                 { "{Year}", SDate.Now().Year.ToString("00") },
-                { "{TotalDays}", SDate.Now().DaysSinceStart.ToString("0000") }
+                { "{TotalDays}", SDate.Now().DaysSinceStart.ToString("0000") },
+                { "{FarmName}", Game1.player.farmName}
             };
             foreach(System.Collections.Generic.KeyValuePair<string, string> format_item in screenshot_dict)
             {
