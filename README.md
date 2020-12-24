@@ -46,6 +46,8 @@ Open config.json and change the values you would like to change
   * {Day} is replaced with the day of the season in 2 digit format (01, 05, 11)
   * {Year} is replaced with the current year in 2 digit format  (01, 05, 11)
   * {TotalDays} is replaced with the total number of days that have passed since Spring 1, Year 1 in 4 digit format (0001, 0023)
+  * Anything else is added literally to the screnshot name as is.
+  * I.E {PlayerName}_{Season}_{Day}_{Year} is turned into Bob_spring_03_01 for a character named Bob, on spring day 3, year 1
 
 ### NEXUS PAGE
 [AutoFarmScreenshot](https://www.nexusmods.com/stardewvalley/mods/4783/)
