@@ -50,15 +50,15 @@ namespace AutoFarmScreenshot
         private string Format_Screenshot_Name()
         {
             string _screenshot_name = screenshot_format;
-            var screenshot_dict = new System.Collections.Generic.Dictionary<string, string> { 
-                { "{PlayerName}", Game1.player.name }, 
+            var screenshot_dict = new System.Collections.Generic.Dictionary<string, string> {
+                { "{PlayerName}", Game1.player.name.ToString() },
                 { "{Season}", SDate.Now().Season.ToString() },
                 { "{Day}", SDate.Now().Day.ToString("00") },
                 { "{Year}", SDate.Now().Year.ToString("00") },
                 { "{TotalDays}", SDate.Now().DaysSinceStart.ToString("0000") },
-                { "{FarmName}", Game1.player.farmName}
+                { "{FarmName}", Game1.player.farmName.ToString() }
             };
-            foreach(System.Collections.Generic.KeyValuePair<string, string> format_item in screenshot_dict)
+            foreach (System.Collections.Generic.KeyValuePair<string, string> format_item in screenshot_dict)
             {
                 _screenshot_name = _screenshot_name.Replace(format_item.Key, format_item.Value);
             }
