@@ -16,9 +16,8 @@ namespace AutoFarmScreenshot
         string screenshot_format = null;
         IReflectedMethod takeMapscreenshot = null;
         IReflectedMethod addMessage = null;
-        bool isScreenshottedToday = false;
-        bool nowInFarm = false;
         int tryTimes = 0;
+        int counter = 0;
 
         /*********
         ** Public methods
@@ -33,7 +32,6 @@ namespace AutoFarmScreenshot
             screenshot_format = Config.ScreenshotFormat;
             // attach event
             Helper.Events.GameLoop.SaveLoaded += GameLoop_SaveLoaded;
-            Helper.Events.Player.Warped += Player_Warped;
             Helper.Events.GameLoop.TimeChanged += GameLoop_TimeChanged;
             Helper.Events.GameLoop.DayStarted += GameLoop_DayStarted;
         }
@@ -41,10 +39,8 @@ namespace AutoFarmScreenshot
         private void initValue()
         {
             tryTimes = 0;
-            nowInFarm = false;
-            isScreenshottedToday = false;
+            counter = 0;
             var SToday = SDate.Now();
-            screenshot_name = Format_Screenshot_Name();
         }
 
         private string Format_Screenshot_Name()
@@ -52,9 +48,10 @@ namespace AutoFarmScreenshot
             string _screenshot_name = screenshot_format;
             var screenshot_dict = new System.Collections.Generic.Dictionary<string, string> {
                 { "{PlayerName}", Game1.player.name.ToString() },
+                { "{Year}", SDate.Now().Year.ToString("00") },
                 { "{Season}", SDate.Now().Season.ToString() },
                 { "{Day}", SDate.Now().Day.ToString("00") },
-                { "{Year}", SDate.Now().Year.ToString("00") },
+                { "{Counter}", counter.ToString() },
                 { "{TotalDays}", SDate.Now().DaysSinceStart.ToString("0000") },
                 { "{FarmName}", Game1.player.farmName.ToString() }
             };
@@ -72,22 +69,18 @@ namespace AutoFarmScreenshot
 
         private void GameLoop_TimeChanged(object sender, TimeChangedEventArgs e)
         {
-            // ignore if the screenshot had been captured or the player is not in farm
-            if (isScreenshottedToday || !nowInFarm)
-                return;
-
+            screenshot_name = Format_Screenshot_Name();
             string fullName = takeMapscreenshot.Invoke<string>(scale, screenshot_name, null);
             if (fullName != null)
             {
                 // take screenshot
+                counter++;
                 addMessage.Invoke("Saved screenshot as '" + fullName + "'.", Color.Green);
-                isScreenshottedToday = true;
             }
             else
             {
                 if (tryTimes++ > 3)
                 {
-                    isScreenshottedToday = true;
                     addMessage.Invoke("Failed taking screenshot over 3 times, won't try agian today!", Color.Red);
                 }
                 else
@@ -101,21 +94,5 @@ namespace AutoFarmScreenshot
             addMessage = Helper.Reflection.GetMethod(Game1.chatBox, "addMessage");
         }
 
-        private void Player_Warped(object sender, WarpedEventArgs e)
-        {
-            // ignore if the affected player is not the local one
-            if (!e.IsLocalPlayer)
-                return;
-            // ignore if the screenshot had been captured
-            if (isScreenshottedToday)
-                return;
-            // set nowInFarm
-            if (e.NewLocation.name.Value.Equals("Farm"))
-                nowInFarm = true;
-            if (!nowInFarm)
-                return;
-            if (e.OldLocation.name.Value.Equals("Farm"))
-                nowInFarm = false;
-        }
     }
 }

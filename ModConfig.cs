@@ -13,7 +13,7 @@ namespace AutoFarmScreenshot
         public ModConfig()
         {
             this.ScaleNumber = 0.25f;
-            this.ScreenshotFormat = "{PlayerName}_{Season}_{Day}_{Year}";
+            this.ScreenshotFormat = "{PlayerName}_{Year}_{Season}_{Day}_{Counter}";
         }
     }
 }
